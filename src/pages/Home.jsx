@@ -12,7 +12,7 @@ function Home() {
         });
     }, []);
 
-    if (posts.length === 0) {
+    if (posts.length < 0) {
         return (
             <div className="w-full py-8 mt-4 text-center">
                 <Container>
@@ -27,6 +27,7 @@ function Home() {
             </div>
         );
     }
+
     return (
         <div className="w-full py-8">
             <Container>
