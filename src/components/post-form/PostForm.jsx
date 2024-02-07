@@ -56,7 +56,7 @@ export default function PostForm({ post }) {
                     }
                 }
             } catch (error) {
-                console.log(error);
+                console.log(error.message);
             }
         }
     };

@@ -29,7 +29,7 @@ export class Service {
                 }
             );
         } catch (error) {
-            throw error;
+            console.log(error);
         }
     }
     async updatePost(slug, { title, content, featuredImage, status }) {
@@ -97,7 +97,7 @@ export class Service {
                 file
             );
         } catch (error) {
-            console.log("Appwrite serive :: uploadFile :: error", error);
+            console.log("Appwrite service :: uploadFile :: error", error);
             return false;
         }
     }
