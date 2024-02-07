@@ -10,6 +10,7 @@ import Signup from "./Signup";
 import Login from "./Login";
 import PostCard from "./PostCard";
 import Protected from "./AuthLayout";
+import Select from "./Select";
 import PostForm from "./post-form/PostForm";
 
 export {
@@ -26,4 +27,5 @@ export {
     PostCard,
     PostForm,
     Protected,
+    Select,
 };

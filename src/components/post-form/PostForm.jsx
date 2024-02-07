@@ -16,46 +16,59 @@ export default function PostForm({ post }) {
             },
         });
     const navigate = useNavigate();
-    const userData = useSelector((state = state.user.userData));
+    const userData = useSelector((state) => state.auth.userData);
+
+    console.log(userData);
 
     const submit = async (data) => {
+        console.log("Post data -", data);
         if (post) {
-            data.image[0] ? service.uploadFile(data.image[0]) : null;
+            try {
+                const file = data.image[0]
+                    ? service.uploadFile(data.image[0])
+                    : null;
 
-            if (file) {
-                service.deleteFile(post.featuredImage);
-            }
-            const dbPost = await service.updatePost(post.$id, {
-                ...data,
-                featuredImage: file ? file.$id : undefined,
-            });
-            if (dbPost) {
-                navigate(`/post/${dbPost.$id}`);
-            }
-        } else {
-            const file = await service.uploadFile(data.image[0]);
-            if (file) {
-                const fileId = file.$id;
-                data.featuredImage = fileId;
-                const dbPost = await service.createPost({
+                if (file) {
+                    service.deleteFile(post.featuredImage);
+                }
+                const dbPost = await service.updatePost(post.$id, {
                     ...data,
-                    userId: userData.$id,
+                    featuredImage: file ? file.$id : undefined,
                 });
                 if (dbPost) {
                     navigate(`/post/${dbPost.$id}`);
                 }
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            try {
+                const file = await service.uploadFile(data.image[0]);
+                if (file) {
+                    const fileId = file.$id;
+                    data.featuredImage = fileId;
+                    const dbPost = await service.createPost({
+                        ...data,
+                        userId: userData.$id,
+                    });
+                    if (dbPost) {
+                        navigate(`/post/${dbPost.$id}`);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
             }
         }
     };
 
     const slugTransform = useCallback((value) => {
-        if (value && typeof value === "string") {
+        if (value && typeof value === "string")
             return value
                 .trim()
                 .toLowerCase()
-                .replace(/^[a-zA-Z\d\s]+/g, "-")
+                .replace(/[^a-zA-Z\d\s]+/g, "-")
                 .replace(/\s/g, "-");
-        }
+
         return "";
     }, []);
 
@@ -70,6 +83,8 @@ export default function PostForm({ post }) {
                 );
             }
         });
+
+        return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
     return (
         <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
